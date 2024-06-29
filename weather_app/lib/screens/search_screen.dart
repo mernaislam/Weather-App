@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/cubits/get_weather_cubit/get_weather_cubit.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -8,10 +10,19 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  void onSubmitted(String value) {
+    var getWeatherCubit = BlocProvider.of<GetWeatherCubit>(context);
+    getWeatherCubit.getWeather(cityName: value);
+    Navigator.of(context).pop(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         title: const Text(
           'Search a City',
           style: TextStyle(fontSize: 25),
@@ -21,9 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: TextField(
-            onSubmitted: (value) {
-              Navigator.of(context).pop(value);
-            },
+            onSubmitted: onSubmitted,
             decoration: InputDecoration(
               labelText: 'Search',
               hintText: 'Enter City Name',

@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app/models/weather_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/cubits/get_weather_cubit/get_weather_cubit.dart';
+import 'package:weather_app/main.dart';
 
 class WeatherDetails extends StatelessWidget {
-  final WeatherModel weatherModel;
-  const WeatherDetails({super.key, required this.weatherModel});
+  const WeatherDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var weatherModel = BlocProvider.of<GetWeatherCubit>(context).weatherModel;
+    var bgColor = getThemeColor(weatherModel!.day.condition);
     return Container(
       height: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color.fromARGB(255, 57, 165, 253),
-            Color.fromARGB(255, 168, 215, 253),
+            bgColor,
+            bgColor[300]!,
+            bgColor[50]!
           ],
         ),
       ),
@@ -40,16 +44,16 @@ class WeatherDetails extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Image.asset('assets/images/cloudy.png'),
+                Image.network(weatherModel.image),
                 Text(
-                  '${weatherModel.day.currentTemp.ceil()}',
+                  '${weatherModel.day.currentTemp.round()}',
                   style: const TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  'maxTemp: ${weatherModel.day.maxTemp} \nminTemp: ${weatherModel.day.minTemp}',
+                  'maxTemp: ${weatherModel.day.maxTemp.round()} \nminTemp: ${weatherModel.day.minTemp.round()}',
                   style: const TextStyle(
                     fontSize: 16,
                   ),
